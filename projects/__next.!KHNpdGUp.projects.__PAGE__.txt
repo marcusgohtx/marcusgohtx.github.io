@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[22016,["/_next/static/chunks/7c92e96509cd355e.js","/_next/static/chunks/58521ed872f9995d.js"],""]
+3:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/d2be314c3ece3fbe.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"buildId":"nVsmgfpEZX0XiivU0SsWj","rsc":["$","$1","c",{"children":[["$","section",null,{"className":"space-y-5","children":[["$","h1",null,{"className":"text-3xl font-bold tracking-tight","children":"Projects"}],["$","div",null,{"className":"grid gap-4 sm:grid-cols-2 xl:grid-cols-3","children":["$","$L2",null,{"href":"/projects/schedular","className":"block","children":["$","div",null,{"className":"rounded-xl border bg-card text-card-foreground shadow-sm h-full transition-colors hover:bg-secondary/50","children":["$","div",null,{"className":"flex flex-col space-y-1.5 p-6","children":[["$","h3",null,{"className":"text-xl font-semibold leading-none tracking-tight","children":"schedular"}],["$","p",null,{"className":"text-sm text-muted-foreground","children":"Conveniently plan a schedule and push changes to your Google Calendar."}]]}]}]}]}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+5:null

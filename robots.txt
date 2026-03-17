@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://marcusgohtx.github.io/al-folio/sitemap.xml
