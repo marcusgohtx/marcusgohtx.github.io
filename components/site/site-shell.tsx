@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FolderKanban, Menu, UserRound, UsersRound } from "lucide-react";
@@ -33,8 +34,15 @@ function SidebarNav({
   return (
     <aside className="flex w-full flex-col">
       <div className="mb-8 flex flex-col items-center gap-3 text-center">
-        <div className="flex h-28 w-28 items-center justify-center rounded-full border text-sm font-semibold text-muted-foreground">
-          PHOTO
+        <div className="relative h-28 w-28 overflow-hidden rounded-full border">
+          <Image
+            src="/profile.jpg"
+            alt="Marcus Goh"
+            fill
+            sizes="112px"
+            className="object-cover"
+            priority
+          />
         </div>
         <p className="max-w-[16ch] text-sm text-muted-foreground">
           Builder crafting practical, human-centered digital tools.
