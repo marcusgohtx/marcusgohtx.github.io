@@ -1,4 +1,4 @@
-name: Deploy Next.js to GitHub Pages
+name: Build and Deploy to gh-pages
 
 on:
   push:
@@ -9,16 +9,14 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: "pages"
+  group: "gh-pages"
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -44,34 +42,32 @@ jobs:
       - name: Ensure .nojekyll
         run: touch out/.nojekyll
 
-      - name: Archive Pages artifact
+      - name: Prepare deploy branch
         run: |
-          tar \
-          --dereference --hard-dereference \
-          --directory "out" \
-          -cvf "${RUNNER_TEMP}/artifact.tar" \
-          --exclude=.git \
-          --exclude=.github \
-          --exclude=".[^/]*" \
-          .
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Upload Pages artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: github-pages
-          path: ${{ runner.temp }}/artifact.tar
-          retention-days: 1
-          if-no-files-found: error
+          REPO_URL="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          mkdir .deploy
+          if git ls-remote --exit-code --heads "$REPO_URL" gh-pages; then
+            git clone --depth 1 --branch gh-pages "$REPO_URL" .deploy
+          else
+            git clone --depth 1 "$REPO_URL" .deploy
+            cd .deploy
+            git checkout --orphan gh-pages
+            git rm -rf . >/dev/null 2>&1 || true
+            cd ..
+          fi
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish site to gh-pages
+        run: |
+          rsync -av --delete --exclude ".git" out/ .deploy/
+          cd .deploy
+          touch .nojekyll
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to publish."
+          else
+            git commit -m "Deploy ${GITHUB_SHA}"
+            git push origin gh-pages
+          fi
