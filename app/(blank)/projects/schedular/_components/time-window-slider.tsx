@@ -6,7 +6,7 @@ interface TimeWindowSliderProps {
   onChange: (startHour: number, endHour: number) => void;
 }
 
-const MIN_GAP = 1;
+const MIN_GAP = 2;
 const MIN_HOUR = 0;
 const MAX_HOUR = 24;
 

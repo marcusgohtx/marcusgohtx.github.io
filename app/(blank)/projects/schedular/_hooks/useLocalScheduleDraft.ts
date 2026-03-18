@@ -21,6 +21,7 @@ const DEFAULT_PREFERENCES: SchedularPreferences = {
   visibleStartHour: 6,
   visibleEndHour: 22,
 };
+const MIN_VISIBLE_HOUR_GAP = 2;
 
 const LEGACY_VISIBLE_HOURS_PRESETS: Record<
   string,
@@ -70,21 +71,31 @@ export function useLocalScheduleDraft(): UseLocalScheduleDraftResult {
           typeof parsedPreferences.visibleHoursPreset === "string"
             ? LEGACY_VISIBLE_HOURS_PRESETS[parsedPreferences.visibleHoursPreset]
             : undefined;
+        const visibleStartHour =
+          typeof parsedPreferences.visibleStartHour === "number"
+            ? parsedPreferences.visibleStartHour
+            : legacyVisibleHours?.visibleStartHour ??
+              DEFAULT_PREFERENCES.visibleStartHour;
+        const visibleEndHour =
+          typeof parsedPreferences.visibleEndHour === "number"
+            ? parsedPreferences.visibleEndHour
+            : legacyVisibleHours?.visibleEndHour ??
+              DEFAULT_PREFERENCES.visibleEndHour;
+        const normalizedVisibleStartHour = Math.max(
+          0,
+          Math.min(visibleStartHour, 24 - MIN_VISIBLE_HOUR_GAP)
+        );
+        const normalizedVisibleEndHour = Math.max(
+          Math.min(24, normalizedVisibleStartHour + MIN_VISIBLE_HOUR_GAP),
+          Math.min(24, visibleEndHour)
+        );
         setPreferences({
           autosaveEnabled:
             typeof parsedPreferences.autosaveEnabled === "boolean"
               ? parsedPreferences.autosaveEnabled
               : true,
-          visibleStartHour:
-            typeof parsedPreferences.visibleStartHour === "number"
-              ? parsedPreferences.visibleStartHour
-              : legacyVisibleHours?.visibleStartHour ??
-                DEFAULT_PREFERENCES.visibleStartHour,
-          visibleEndHour:
-            typeof parsedPreferences.visibleEndHour === "number"
-              ? parsedPreferences.visibleEndHour
-              : legacyVisibleHours?.visibleEndHour ??
-                DEFAULT_PREFERENCES.visibleEndHour,
+          visibleStartHour: normalizedVisibleStartHour,
+          visibleEndHour: normalizedVisibleEndHour,
         });
       } else {
         setPreferences(DEFAULT_PREFERENCES);
