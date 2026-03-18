@@ -10,7 +10,6 @@ import {
   formatDateInputValue,
   generateId,
   parseDateInputValue,
-  shiftDateByDays,
 } from "../_lib/utils";
 import { useLocalScheduleDraft } from "../_hooks/useLocalScheduleDraft";
 import type { ScheduleDraft, ScheduleEvent, SchedularPreferences } from "../types";
@@ -279,22 +278,38 @@ export function SchedularProjectPage() {
       return;
     }
 
-    const dayDifference = Math.round(
-      (nextStartDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    if (nextStartDate.getTime() === startDate.getTime()) {
+      return;
+    }
 
-    if (dayDifference === 0) {
-      setStartDate(nextStartDate);
+    const nextEndDate = new Date(nextStartDate);
+    nextEndDate.setDate(nextEndDate.getDate() + days - 1);
+    nextEndDate.setHours(23, 59, 59, 999);
+
+    const eventsOutsideRange = events.filter((event) => {
+      const eventDate = new Date(event.startTime);
+      eventDate.setHours(0, 0, 0, 0);
+
+      return eventDate < nextStartDate || eventDate > nextEndDate;
+    });
+
+    if (
+      eventsOutsideRange.length > 0 &&
+      !window.confirm(
+        `Changing the start date will remove ${eventsOutsideRange.length} event(s) outside the new range. Continue?`
+      )
+    ) {
       return;
     }
 
     setStartDate(nextStartDate);
     setEvents((prevEvents) =>
-      prevEvents.map((event) => ({
-        ...event,
-        startTime: shiftDateByDays(event.startTime, dayDifference),
-        endTime: shiftDateByDays(event.endTime, dayDifference),
-      }))
+      prevEvents.filter((event) => {
+        const eventDate = new Date(event.startTime);
+        eventDate.setHours(0, 0, 0, 0);
+
+        return eventDate >= nextStartDate && eventDate <= nextEndDate;
+      })
     );
     setHasUnsavedChanges(true);
   };
@@ -383,9 +398,6 @@ export function SchedularProjectPage() {
             </Link>
             <p className="text-xl font-bold text-gray-800 mt-1">schedular</p>
           </div>
-          <p className="text-sm text-gray-500 hidden md:block">
-            Static MVP with local browser save and .ics export.
-          </p>
         </div>
       </nav>
 
@@ -418,7 +430,7 @@ export function SchedularProjectPage() {
                       event.preventDefault();
                       focusTitleInput();
                     }}
-                    className="flex-shrink-0 text-gray-300 hover:text-gray-500 p-1 rounded transition-colors duration-200 mt-1"
+                    className="flex-shrink-0 text-gray-500 hover:text-gray-700 p-1 rounded transition-colors duration-200 mt-1"
                     type="button"
                     aria-label="Edit schedule name"
                   >
@@ -437,17 +449,16 @@ export function SchedularProjectPage() {
                     </svg>
                   </button>
                 </div>
-                <p className="text-gray-600 text-sm mt-1">
-                  {events.length} events across {days} days
+                <p className="text-gray-600 text-sm mt-1 min-h-5">
                   {hasUnsavedChanges && !saving && !showSavedConfirmation && (
-                    <span className="text-amber-600 ml-2">
-                      - Unsaved changes
+                    <span className="text-amber-600">
+                      Unsaved changes
                       {!preferences.autosaveEnabled && " (autosave off)"}
                     </span>
                   )}
-                  {saving && <span className="text-blue-600 ml-2">- Saving locally...</span>}
+                  {saving && <span className="text-blue-600">Saving locally...</span>}
                   {showSavedConfirmation && !saving && (
-                    <span className="text-green-600 ml-2">- Saved in this browser</span>
+                    <span className="text-green-600">Saved in this browser</span>
                   )}
                 </p>
               </div>
@@ -502,7 +513,7 @@ export function SchedularProjectPage() {
                   onChange={(event) => handleDaysChange(Number(event.target.value))}
                   className="border border-gray-300 rounded px-2 py-1 text-sm text-gray-900"
                 >
-                  {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+                  {Array.from({ length: 20 }, (_, index) => index + 1).map((value) => (
                     <option key={value} value={value}>
                       {value}
                     </option>

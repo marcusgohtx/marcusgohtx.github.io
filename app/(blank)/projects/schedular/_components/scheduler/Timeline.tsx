@@ -114,6 +114,16 @@ export default function Timeline({
     date.setDate(date.getDate() + i);
     return date;
   });
+  const startDateAtMidnightTime = new Date(startDate).setHours(0, 0, 0, 0);
+
+  const getEventDayIndex = useCallback((event: Pick<ScheduleEvent, 'startTime'>) => {
+    const eventDate = new Date(event.startTime);
+    eventDate.setHours(0, 0, 0, 0);
+
+    return Math.round(
+      (eventDate.getTime() - startDateAtMidnightTime) / (1000 * 60 * 60 * 24)
+    );
+  }, [startDateAtMidnightTime]);
 
   const getTimeFromPosition = useCallback((y: number): { hour: number; minute: number } => {
     const visibleMinutes = Math.max(
@@ -145,14 +155,15 @@ export default function Timeline({
   const getEventPosition = useCallback((event: ScheduleEvent) => {
     const startHour = event.startTime.getHours() + (event.startTime.getMinutes() / 60);
     const endHour = event.endTime.getHours() + (event.endTime.getMinutes() / 60);
+    const eventDayIndex = getEventDayIndex(event);
     
     return {
-      left: timeColumnWidth + (event.day * dayColumnWidth) + 4,
+      left: timeColumnWidth + (eventDayIndex * dayColumnWidth) + 4,
       top: (startHour - visibleStartHour) * hourHeight + headerHeight,
       width: dayColumnWidth - 8,
       height: (endHour - startHour) * hourHeight
     };
-  }, [dayColumnWidth, headerHeight, hourHeight, timeColumnWidth, visibleStartHour]);
+  }, [dayColumnWidth, getEventDayIndex, headerHeight, hourHeight, timeColumnWidth, visibleStartHour]);
 
   const getEventsInSelectionBox = useCallback(() => {
     const box = {
@@ -191,7 +202,7 @@ export default function Timeline({
     clickTime.setHours(hour, minute, 0, 0);
     
     const eventsAtPosition = events.filter(event => {
-      if (event.day !== dayIndex) return false;
+      if (getEventDayIndex(event) !== dayIndex) return false;
       const eventStart = new Date(event.startTime);
       const eventEnd = new Date(event.endTime);
       return clickTime >= eventStart && clickTime < eventEnd;
@@ -308,7 +319,7 @@ export default function Timeline({
         const selectedEvent = events.find(e => e.id === eventId);
         if (selectedEvent) {
           originalPositions[eventId] = {
-            day: selectedEvent.day,
+            day: getEventDayIndex(selectedEvent),
             startTime: new Date(selectedEvent.startTime),
             endTime: new Date(selectedEvent.endTime)
           };
@@ -321,7 +332,7 @@ export default function Timeline({
         dragType: 'multi-move',
         startX: e.clientX - rect.left,
         startY: e.clientY - rect.top,
-        originalDay: event.day,
+        originalDay: getEventDayIndex(event),
         originalStartTime: new Date(event.startTime),
         originalEndTime: new Date(event.endTime),
         isCtrlPressed,
@@ -337,7 +348,7 @@ export default function Timeline({
       dragType,
       startX: e.clientX - rect.left,
       startY: e.clientY - rect.top,
-      originalDay: event.day,
+      originalDay: getEventDayIndex(event),
       originalStartTime: new Date(event.startTime),
       originalEndTime: new Date(event.endTime),
       isCtrlPressed,
@@ -417,7 +428,7 @@ export default function Timeline({
         title: event.title,
         startTime: new Date(event.startTime),
         endTime: new Date(event.endTime),
-        day: event.day,
+        day: getEventDayIndex(event),
         color: event.color
       };
 
@@ -561,7 +572,8 @@ export default function Timeline({
     } else if (dragState.dragType === 'resize-top') {
       const { hour, minute } = getTimeFromPosition(currentY - headerHeight);
       
-      const newStartTime = new Date(daysArray[event.day]);
+      const eventDayIndex = getEventDayIndex(event);
+      const newStartTime = new Date(daysArray[eventDayIndex]);
       newStartTime.setHours(hour, minute, 0, 0);
       
       if (newStartTime.getTime() < event.endTime.getTime()) {
@@ -572,7 +584,8 @@ export default function Timeline({
     } else if (dragState.dragType === 'resize-bottom') {
       const { hour, minute } = getTimeFromPosition(currentY - headerHeight);
       
-      const newEndTime = new Date(daysArray[event.day]);
+      const eventDayIndex = getEventDayIndex(event);
+      const newEndTime = new Date(daysArray[eventDayIndex]);
       newEndTime.setHours(hour, minute, 0, 0);
       
       if (newEndTime.getTime() > event.startTime.getTime()) {
@@ -682,17 +695,16 @@ export default function Timeline({
     const startHour = event.startTime.getHours() + (event.startTime.getMinutes() / 60);
     const endHour = event.endTime.getHours() + (event.endTime.getMinutes() / 60);
     const duration = endHour - startHour;
+    const startMinutes = event.startTime.getHours() * 60 + event.startTime.getMinutes();
     
     const isDragging = dragState.isDragging && (
       dragState.eventId === event.id || 
       (dragState.dragType === 'multi-move' && selectedEvents.includes(event.id))
     );
     const isSelected = selectedEvents.includes(event.id);
+    const baseZIndex = 100 + startMinutes;
     
-    // For small events, ensure minimum height for usability but limit draggable area
-    const calculatedHeight = duration * 60;
-    const minHeight = 60; // Minimum visual height
-    const displayHeight = Math.max(calculatedHeight, minHeight);
+    const displayHeight = duration * 60;
     
     return {
       position: 'absolute' as const,
@@ -702,17 +714,24 @@ export default function Timeline({
       right: '4px',
       backgroundColor: event.color || '#3b82f6',
       borderRadius: '4px',
-      padding: '8px',
+      padding: '4px',
       fontSize: '12px',
       color: 'white',
       cursor: isDragging ? 'grabbing' : 'grab',
-      zIndex: isDragging ? 30 : isSelected ? 20 : 10,
-      border: isDragging ? '2px solid rgba(59, 130, 246, 0.8)' : isSelected ? '2px solid #1d4ed8' : 'none',
+      zIndex: isDragging ? 5000 : isSelected ? 4000 + startMinutes : baseZIndex,
+      border: isDragging || isSelected
+        ? '3px solid rgba(17, 24, 39, 0.98)'
+        : '2px solid rgba(17, 24, 39, 0.92)',
       opacity: isDragging ? 0.9 : 1,
       transform: isDragging ? 'scale(1.02)' : 'none',
       transition: isDragging ? 'none' : 'all 0.2s ease',
-      boxShadow: isDragging ? '0 8px 25px rgba(0, 0, 0, 0.15)' : isSelected ? '0 2px 8px rgba(29, 78, 216, 0.3)' : 'none',
-      userSelect: 'none' as const
+      boxShadow: isDragging
+        ? '0 10px 28px rgba(0, 0, 0, 0.28)'
+        : isSelected
+          ? '0 4px 12px rgba(0, 0, 0, 0.22)'
+          : '0 2px 6px rgba(0, 0, 0, 0.12)',
+      userSelect: 'none' as const,
+      overflow: 'visible' as const,
     };
   };
 
@@ -740,7 +759,7 @@ export default function Timeline({
       border: '2px dashed #3b82f6',
       backgroundColor: 'rgba(59, 130, 246, 0.1)',
       pointerEvents: 'none' as const,
-      zIndex: 25,
+      zIndex: 6000,
     };
   };
 
@@ -748,9 +767,8 @@ export default function Timeline({
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       {/* Header */}
       <div className="bg-gray-50 border-b border-gray-200 p-4">
-        <h2 className="text-lg font-semibold text-gray-800">Schedule Timeline</h2>
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-600">Click to create • Drag to move • Shift+drag to select • Ctrl+drag to copy</p>
+          <h2 className="text-lg font-semibold text-gray-800">Schedule Timeline</h2>
           {selectedEvents.length > 0 && (
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-600 font-medium">
@@ -787,11 +805,11 @@ export default function Timeline({
           
           {/* Time Column */}
           <div className="time-column w-16 bg-gray-50 border-r border-gray-200 relative z-10">
-            <div className="h-12 border-b border-gray-200"></div>
+            <div className="h-12 border-b border-gray-200 sticky top-0 bg-gray-50 z-30"></div>
             {hours.map((hour) => (
               <div
                 key={hour}
-                className="h-15 border-b border-gray-100 flex items-start justify-center pt-1 text-xs text-gray-500"
+                className="h-15 border-b-2 border-gray-500 flex items-start justify-center pt-1 text-xs text-gray-600"
                 style={{ height: `${hourHeight}px` }}
               >
                 {formatTime(new Date(2024, 0, 1, hour))}
@@ -803,7 +821,7 @@ export default function Timeline({
           {daysArray.map((date, dayIndex) => (
             <div key={dayIndex} className="flex-shrink-0 w-48 border-r border-gray-200">
               {/* Day Header */}
-              <div className="h-12 bg-gray-50 border-b border-gray-200 flex items-center justify-center">
+              <div className="h-12 bg-gray-50 border-b border-gray-200 flex items-center justify-center sticky top-0 z-20">
                 <div className="text-center">
                   <div className="text-xs text-gray-500">
                     {date.toLocaleDateString('en-US', { weekday: 'short' })}
@@ -819,7 +837,7 @@ export default function Timeline({
                 {hours.map((hour) => (
                   <div
                     key={hour}
-                    className={`border-b border-gray-100 cursor-pointer relative transition-colors ${
+                    className={`border-b-2 border-gray-500 cursor-pointer relative transition-colors ${
                       !dragState.isDragging && !selectionBox.isSelecting ? 'hover:bg-blue-50' : ''
                     }`}
                     style={{ height: `${hourHeight}px` }}
@@ -834,7 +852,7 @@ export default function Timeline({
                     {Array.from({ length: Math.floor(60 / snapInterval) - 1 }, (_, i) => (
                       <div 
                         key={i}
-                        className="absolute top-0 left-0 right-0 h-px bg-gray-100" 
+                        className="absolute top-0 left-0 right-0 h-px bg-gray-300" 
                         style={{ top: `${((i + 1) * snapInterval / 60) * hourHeight}px` }}
                       />
                     ))}
@@ -842,7 +860,7 @@ export default function Timeline({
                 ))}
 
                 {/* Preview event being created */}
-                {creatingEvent && creatingEvent.day === dayIndex && (
+                {creatingEvent && getEventDayIndex(creatingEvent as ScheduleEvent) === dayIndex && (
                   <div
                     style={{
                       ...getEventStyle(creatingEvent as ScheduleEvent),
@@ -859,7 +877,21 @@ export default function Timeline({
 
                 {/* Events for this day */}
                 {events
-                  .filter((event) => event.day === dayIndex && isEventVisible(event))
+                  .filter((event) => getEventDayIndex(event) === dayIndex && isEventVisible(event))
+                  .sort((leftEvent, rightEvent) => {
+                    const leftStartMinutes =
+                      leftEvent.startTime.getHours() * 60 +
+                      leftEvent.startTime.getMinutes();
+                    const rightStartMinutes =
+                      rightEvent.startTime.getHours() * 60 +
+                      rightEvent.startTime.getMinutes();
+
+                    if (leftStartMinutes !== rightStartMinutes) {
+                      return leftStartMinutes - rightStartMinutes;
+                    }
+
+                    return leftEvent.endTime.getTime() - rightEvent.endTime.getTime();
+                  })
                   .map((event) => (
                     <div
                       key={event.id}
@@ -881,13 +913,14 @@ export default function Timeline({
                         className="relative group px-2 py-1" 
                         style={{ 
                           cursor: 'grab', 
-                          minHeight: '60px', 
                           zIndex: 10, // Higher than resize handles to capture all clicks
                           position: 'absolute',
                           top: 0,
                           left: 0,
                           right: 0,
-                          bottom: 0
+                          bottom: 0,
+                          overflow: 'hidden',
+                          borderRadius: '2px',
                         }}
                         onMouseDown={(e) => {
                           if (editingEventId === event.id || colorPickerEventId === event.id) {
@@ -924,7 +957,7 @@ export default function Timeline({
                           handleMouseDown(e, event, 'move');
                         }}
                       >
-                        <div className="flex items-start gap-1" style={{ minHeight: '20px' }}>
+                        <div className="flex items-start gap-1 min-w-0">
                           <input
                             ref={(el) => {
                               if (el && editingEventId === event.id) {
@@ -1052,7 +1085,7 @@ export default function Timeline({
                           }}
                           onMouseDown={(e) => e.stopPropagation()}
                         >
-                          ×
+                          X
                         </button>
                       )}
                     </div>

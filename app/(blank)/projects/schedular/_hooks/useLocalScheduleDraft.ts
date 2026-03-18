@@ -21,7 +21,10 @@ const DEFAULT_PREFERENCES: SchedularPreferences = {
   visibleStartHour: 6,
   visibleEndHour: 22,
 };
-const MIN_VISIBLE_HOUR_GAP = 2;
+const MIN_VISIBLE_START_HOUR = 0;
+const MAX_VISIBLE_START_HOUR = 6;
+const MIN_VISIBLE_END_HOUR = 18;
+const MAX_VISIBLE_END_HOUR = 24;
 
 const LEGACY_VISIBLE_HOURS_PRESETS: Record<
   string,
@@ -82,12 +85,12 @@ export function useLocalScheduleDraft(): UseLocalScheduleDraftResult {
             : legacyVisibleHours?.visibleEndHour ??
               DEFAULT_PREFERENCES.visibleEndHour;
         const normalizedVisibleStartHour = Math.max(
-          0,
-          Math.min(visibleStartHour, 24 - MIN_VISIBLE_HOUR_GAP)
+          MIN_VISIBLE_START_HOUR,
+          Math.min(visibleStartHour, MAX_VISIBLE_START_HOUR)
         );
         const normalizedVisibleEndHour = Math.max(
-          Math.min(24, normalizedVisibleStartHour + MIN_VISIBLE_HOUR_GAP),
-          Math.min(24, visibleEndHour)
+          MIN_VISIBLE_END_HOUR,
+          Math.min(MAX_VISIBLE_END_HOUR, visibleEndHour)
         );
         setPreferences({
           autosaveEnabled:
