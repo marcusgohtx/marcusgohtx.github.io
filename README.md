@@ -1,6 +1,6 @@
-# Personal Website (Next.js + shadcn/ui)
+# Personal Website (Next.js + Markdown Blog)
 
-A responsive personal website scaffold using Next.js, Tailwind CSS, and shadcn-style UI primitives.
+A responsive personal website built with Next.js, Tailwind CSS, shadcn-style UI primitives, and a file-based Markdown blog.
 
 ## Local development
 
@@ -16,6 +16,26 @@ npm run build
 ```
 
 The build is configured as a static export in `out/` for GitHub Pages.
+
+## Writing blog posts
+
+Add Markdown files to `content/posts/` using a filename like `2026-03-22-my-post.md`.
+
+Each post should include front matter like:
+
+```md
+---
+title: "My Post"
+publishedAt: "2026-03-22"
+summary: "A short description for the blog index."
+tags:
+  - notes
+  - website
+draft: false
+---
+```
+
+Posts with `draft: true` are excluded from the published site.
 
 ## GitHub Pages deployment
 

@@ -3,13 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { FolderKanban, UserRound, UsersRound } from "lucide-react";
+import { FolderKanban, NotebookText, UserRound, UsersRound } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Projects", href: "/projects", icon: FolderKanban },
+  { label: "Blog", href: "/blog", icon: NotebookText },
   { label: "About me", href: "/about-me", icon: UserRound },
   { label: "Socials", href: "/socials", icon: UsersRound },
 ];
