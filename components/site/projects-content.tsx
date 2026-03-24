@@ -8,6 +8,17 @@ export function ProjectsContent() {
       <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <Link href="/projects/results-reporter" className="block">
+          <Card className="h-full transition-colors hover:bg-secondary/50">
+            <CardHeader>
+              <CardTitle>results reporter</CardTitle>
+              <CardDescription>
+                Run browser-based statistical analyses in R and turn them into report-ready writeups.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+
         <Link href="/projects/schedular" className="block">
           <Card className="h-full transition-colors hover:bg-secondary/50">
             <CardHeader>
