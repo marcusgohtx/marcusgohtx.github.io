@@ -15,7 +15,11 @@ const navItems = [
   { label: "Socials", href: "/socials", icon: UsersRound },
 ];
 
-function isActive(pathname: string, href: string) {
+function isActive(pathname: string | null, href: string) {
+  if (!pathname) {
+    return false;
+  }
+
   if (href === "/projects") {
     return pathname === "/" || pathname.startsWith("/projects");
   }
@@ -23,11 +27,7 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href);
 }
 
-function SidebarNav({
-  pathname,
-}: {
-  pathname: string;
-}) {
+function SidebarNav({ pathname }: { pathname: string | null }) {
   return (
     <aside className="flex w-full flex-col">
       <div className="mb-8 hidden flex-col items-center gap-3 text-center sm:flex">

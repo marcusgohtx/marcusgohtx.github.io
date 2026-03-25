@@ -358,7 +358,7 @@ export function ResultsReporterProjectPage() {
               </div>
 
               {inputMode === "dataset" ? (
-                <div className="space-y-4">
+                <div key="dataset" className="space-y-4">
                   <div className="space-y-2">
                     <label htmlFor="dataset-upload" className="text-sm font-medium">
                       CSV dataset
@@ -534,7 +534,7 @@ export function ResultsReporterProjectPage() {
                   ) : null}
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div key="summary" className="space-y-4">
                   <div className="space-y-2">
                     <label htmlFor="dependent-variable" className="text-sm font-medium">
                       Dependent variable
