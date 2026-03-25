@@ -42,7 +42,7 @@ function SidebarNav({
           />
         </div>
         <p className="max-w-[16ch] text-base text-muted-foreground">
-          {"revolutionising humanity's systems"}
+          {""}
         </p>
       </div>
 
