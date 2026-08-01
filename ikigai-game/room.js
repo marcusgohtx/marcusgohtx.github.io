@@ -23,7 +23,25 @@
     if (!session) { const {error}=await client.auth.signInAnonymously(); if(error) throw new Error('Enable Anonymous Sign-Ins in Supabase, then try again.'); }
     return client;
   }
-  async function rpc(name,args) { await setup(); const {data,error}=await client.rpc(name,args); if(error) throw new Error(error.message); return data; }
+  async function rpc(name,args) {
+    await setup();
+    const { data: { session } } = await client.auth.getSession();
+    if (!session?.access_token) throw new Error('Your room session expired. Please try again.');
+    const request = fetch(`${window.IKIGAI_SUPABASE.url}/rest/v1/rpc/${name}`, {
+      method: 'POST',
+      headers: {
+        apikey: window.IKIGAI_SUPABASE.publishableKey,
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(args)
+    }).then(async response => {
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.message || body.error || 'The room request failed.');
+      return body;
+    });
+    return await Promise.race([request, new Promise((_, reject) => setTimeout(() => reject(new Error('The room request timed out. Please try again.')), 12000))]);
+  }
   function persist() { localStorage.setItem(KEY,JSON.stringify({roomCode})); }
   function clear() { localStorage.removeItem(KEY); roomCode=null; snapshot=null; selected={}; if(timer)clearInterval(timer); timer=null; if(channel){client?.removeChannel(channel);channel=null;} }
   function broadcast() { channel?.send({type:'broadcast',event:'changed',payload:{}}); }
