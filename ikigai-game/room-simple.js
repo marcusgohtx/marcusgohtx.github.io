@@ -31,6 +31,7 @@
     const createButton=event.target.closest('[data-simple-create]');
     if(createButton){event.preventDefault();event.stopImmediatePropagation();create();}
   },true);
-  new MutationObserver(unlockStart).observe(document.getElementById('app'),{childList:true,subtree:true});
+  const app=document.getElementById('app');
+  if(app) new MutationObserver(unlockStart).observe(app,{childList:true,subtree:true});
   unlockStart();
 }());

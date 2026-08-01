@@ -10,6 +10,7 @@
     button.insertAdjacentElement('beforebegin', hint);
     button.title = 'This opens when every configured player has joined.';
   }
-  new MutationObserver(explain).observe(document.getElementById('app'), { childList: true, subtree: true });
+  const app = document.getElementById('app');
+  if (app) new MutationObserver(explain).observe(app, { childList: true, subtree: true });
   explain();
 }());
