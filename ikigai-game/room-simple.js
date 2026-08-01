@@ -26,6 +26,10 @@
     if(prior) prior.textContent=count<2?'Waiting for one friend to join with this room code.':'Ready — the host can start whenever you like.';
   }
   document.addEventListener('click',event=>{
+    // Leaving must always work, including while a room snapshot is loading or
+    // when the room controller has encountered an error.
+    const leave=event.target.closest('[data-r="leave"]');
+    if(leave){event.preventDefault();event.stopImmediatePropagation();location.assign(location.pathname);return;}
     const host=event.target.closest('[data-r="host"],[data-room-action="host"]');
     if(host){event.preventDefault();event.stopImmediatePropagation();showHost();return;}
     const createButton=event.target.closest('[data-simple-create]');
