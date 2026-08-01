@@ -11,7 +11,12 @@
     let {data:{session}}=await db.auth.getSession(); if(!session) await db.auth.signInAnonymously();
     const config={mode:'quick',source:'premade',playerCount:8,itemsPerCategory:5,roundCount:1,roundCardCounts:Object.fromEntries(categories.map(category=>[category,1]))};
     const {data,error}=await db.rpc('create_ikigai_room',{p_name:name,p_title:'Career Possibilities',p_config:config});
-    if(error){alert(error.message);return;} location.search='room='+encodeURIComponent(data?.[0]?.code||data?.code);
+    if(error){alert(error.message);return;}
+    // PostgREST normally returns [{ code }], but handle every supported RPC
+    // response shape.  Never navigate without an actual room code.
+    const roomCode=typeof data==='string'?data:data?.[0]?.code||data?.code;
+    if(!roomCode){alert('The room was created, but its code was not returned. Please try again.');return;}
+    location.assign(location.pathname+'?room='+encodeURIComponent(roomCode));
   }
   function unlockStart() {
     const start=document.querySelector('[data-r="start"]'); if(!start)return;
