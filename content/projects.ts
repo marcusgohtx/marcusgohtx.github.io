@@ -12,6 +12,18 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "ikigai",
+    name: "Ikigai: Make a Life",
+    description:
+      "A pass-the-device game for friends to draft work ingredients and imagine career possibilities together.",
+    fundraisingFeatures: [
+      {
+        description: "Add live multi-device rooms so friends can play together remotely.",
+        raised: 0,
+      },
+    ],
+  },
+  {
     slug: "schedular",
     name: "schedular",
     description: "Conveniently plan a schedule and push changes to your Google Calendar.",
