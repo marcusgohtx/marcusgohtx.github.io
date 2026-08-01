@@ -14,5 +14,6 @@
   }
   document.addEventListener('click',event=>{if(event.target.closest('[data-save-settings]'))save();});
   document.addEventListener('change',event=>{if(event.target.id==='room-setting-mode'){document.getElementById('room-setting-custom').hidden=event.target.value!=='custom';document.getElementById('room-settings-status').textContent=event.target.value==='deep'?'Deep: everyone writes five activities in each category.':event.target.value==='quick'?'Quick: everyone drafts five pre-made activities in each category.':'Custom: choose the counts below.';}});
-  new MutationObserver(settings).observe(document.getElementById('app'),{childList:true,subtree:true}); settings();
+  const app=document.getElementById('app');
+  if(app) new MutationObserver(settings).observe(app,{childList:true,subtree:true}); settings();
 }());
