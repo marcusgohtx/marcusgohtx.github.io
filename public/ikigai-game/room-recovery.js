@@ -7,18 +7,22 @@
   const esc = value => String(value || '').replace(/[&<>'"]/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
   }[char]));
+  const waitFor = (request, message) => Promise.race([
+    request,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(message)), 10000))
+  ]);
 
   async function recover() {
     const app = document.getElementById('app');
     if (!app || app.querySelector('.room-code')) return;
     try {
       const db = supabase.createClient(IKIGAI_SUPABASE.url, IKIGAI_SUPABASE.publishableKey);
-      let { data: { session } } = await db.auth.getSession();
+      let { data: { session } } = await waitFor(db.auth.getSession(), 'Room connection timed out.');
       if (!session) {
-        const { error } = await db.auth.signInAnonymously();
+        const { error } = await waitFor(db.auth.signInAnonymously(), 'Sign-in timed out.');
         if (error) throw error;
       }
-      const { data, error } = await db.rpc('ikigai_room_snapshot', { p_code: code });
+      const { data, error } = await waitFor(db.rpc('ikigai_room_snapshot', { p_code: code }), 'Room loading timed out.');
       if (error) throw error;
       if (!data?.room) throw new Error('This room could not be found.');
       const players = (data.players || []).map(player => `<div class="pass-card"><b>${esc(player.name)}</b><span class="pill">ready</span></div>`).join('');
