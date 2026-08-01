@@ -13,6 +13,8 @@
     let {data:{session}}=await db.auth.getSession(); if(!session) await db.auth.signInAnonymously();
     const {data,error}=await db.rpc('create_ikigai_room',{p_name:name,p_title:title,p_config:config});
     if(error){ alert(error.message); return; }
-    const code=data?.[0]?.code||data?.code; location.search='room='+encodeURIComponent(code);
+    const code=typeof data==='string'?data:data?.[0]?.code||data?.code;
+    if(!code){alert('The room was created, but its code was not returned. Please try again.');return;}
+    location.assign(location.pathname+'?room='+encodeURIComponent(code));
   }, true);
 }());
