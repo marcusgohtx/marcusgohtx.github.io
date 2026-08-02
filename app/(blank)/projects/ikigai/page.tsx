@@ -20,7 +20,7 @@ export default function IkigaiPage() {
       </div>
       <iframe
         title="Ikigai: Make a Life"
-        src="/ikigai-game/index.html?v=20260802-10"
+        src="/ikigai-game/index.html?v=20260802-11"
         className="block h-[calc(100vh-65px)] min-h-[720px] w-full border-0"
         allow="clipboard-write"
       />
