@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PostMetadata } from "@/lib/blog/types";
 
 function formatPublishedDate(publishedAt: string) {
@@ -11,30 +10,23 @@ function formatPublishedDate(publishedAt: string) {
 
 export function BlogList({ posts }: { posts: PostMetadata[] }) {
   return (
-    <div className="grid gap-4">
+    <div className="blog-list">
       {posts.map((post) => (
-        <Link key={post.slug} href={`/blog/${post.slug}`} className="block">
-          <Card className="h-full transition-colors hover:bg-secondary/50">
-            <CardHeader className="gap-3">
-              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                <time dateTime={post.publishedAt}>{formatPublishedDate(post.publishedAt)}</time>
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-border/70 bg-background px-2 py-0.5 text-xs"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+        <Link key={post.slug} href={`/blog/${post.slug}`} className="blog-row">
+          <div className="blog-meta">
+            <time dateTime={post.publishedAt}>{formatPublishedDate(post.publishedAt)}</time>
+            <div className="blog-tags">
+              {post.tags.map((tag) => (
+                <span key={tag}>{tag}</span>
+              ))}
+            </div>
+          </div>
 
-              <div className="space-y-2">
-                <CardTitle>{post.title}</CardTitle>
-                <CardDescription className="text-sm leading-6">{post.summary}</CardDescription>
-                <p className="text-sm font-medium text-foreground">Read post</p>
-              </div>
-            </CardHeader>
-          </Card>
+          <div className="blog-entry">
+            <h2>{post.title}</h2>
+            <p>{post.summary}</p>
+            <span className="blog-read">Read post</span>
+          </div>
         </Link>
       ))}
     </div>

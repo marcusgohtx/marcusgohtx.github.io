@@ -12,18 +12,18 @@ export default async function BlogPage() {
   const posts = await getAllPosts();
 
   return (
-    <section className="max-w-4xl space-y-5">
-      <div className="space-y-3">
-        <h1 className="text-3xl font-bold tracking-tight">Blog</h1>
-        <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+    <section className="blog-index">
+      <header className="blog-index-heading">
+        <h1 className="field-notes-title">Blog</h1>
+        <p>
           Writing about systems, software, and the projects I am building.
         </p>
-      </div>
+      </header>
 
       {posts.length > 0 ? (
         <BlogList posts={posts} />
       ) : (
-        <div className="rounded-xl border border-dashed p-8 text-sm text-muted-foreground">
+        <div className="blog-empty">
           No posts yet. Add a Markdown file in <code>content/posts</code> to publish one.
         </div>
       )}

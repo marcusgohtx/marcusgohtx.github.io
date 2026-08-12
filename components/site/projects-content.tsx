@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { projects } from "@/content/projects";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function ProjectsContent() {
   const fundraisingProjects = projects
@@ -28,72 +27,51 @@ export function ProjectsContent() {
     });
 
   return (
-    <section className="space-y-10">
-      <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
-
-      <section className="space-y-5">
-        <p className="max-w-3xl text-sm leading-6 text-muted-foreground sm:text-base">
+    <section className="projects-page">
+      <header className="projects-heading">
+        <h1 className="field-notes-title">Projects</h1>
+        <p className="projects-intro">
           For every $1 donated, you may message me the feature in the project you want me to
           prioritise.
         </p>
+      </header>
 
-        <div className="-mx-1 overflow-x-auto pb-2">
-          <div className="flex min-w-max gap-5 px-1">
+      <section className="fundraising-grid">
           {fundraisingProjects.map((project) => (
-            <div key={project.slug} className="w-[18rem] shrink-0 space-y-3">
-              <div className="space-y-1">
+            <article key={project.slug} className="fundraising-project">
+              <div className="project-summary">
                 <Link
                   href={`/projects/${project.slug}`}
-                  className="inline-block text-lg font-semibold tracking-tight transition-colors hover:text-foreground/75"
+                  className="project-title-link"
                 >
                   {project.name}
                 </Link>
-                <p className="text-sm text-muted-foreground">{project.description}</p>
+                <p className="project-description">{project.description}</p>
               </div>
 
-              <div className="grid gap-3">
+              <div className="feature-list">
                 {project.fundraisingFeatures.map((feature) => (
-                  <Card
-                    key={feature.description}
-                    className="min-h-[10.5rem] border-dashed bg-secondary/20"
-                  >
-                    <CardHeader className="grid h-full grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
-                      <CardDescription className="pr-2 text-sm leading-6 text-foreground">
-                        {feature.description}
-                      </CardDescription>
-                      <div className="flex h-full min-w-[6.5rem] flex-col items-end justify-between pb-1 text-right">
-                        <div />
-                        <div className="flex flex-col items-end">
-                          <p className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                            ${feature.raised.toLocaleString()}
-                          </p>
-                          <p className="text-xs font-medium tracking-[0.08em] text-muted-foreground">
-                            raised
-                          </p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
+                  <div key={feature.description} className="feature-row">
+                    <p className="feature-description">{feature.description}</p>
+                    <div className="feature-amount">
+                      <p className="feature-value">${feature.raised.toLocaleString()}</p>
+                      <p className="feature-label">raised</p>
+                    </div>
+                  </div>
                 ))}
               </div>
-            </div>
+            </article>
           ))}
-          </div>
-        </div>
       </section>
 
-      <section className="space-y-5">
-        <h2 className="text-2xl font-semibold tracking-tight">Finished projects</h2>
+      <section className="finished-projects">
+        <h2>Finished projects</h2>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="finished-list">
           {projects.map((project) => (
-            <Link key={project.slug} href={`/projects/${project.slug}`} className="block">
-              <Card className="h-full transition-colors hover:bg-secondary/50">
-                <CardHeader>
-                  <CardTitle>{project.name}</CardTitle>
-                  <CardDescription>{project.description}</CardDescription>
-                </CardHeader>
-              </Card>
+            <Link key={project.slug} href={`/projects/${project.slug}`} className="finished-row">
+              <h3>{project.name}</h3>
+              <p>{project.description}</p>
             </Link>
           ))}
         </div>

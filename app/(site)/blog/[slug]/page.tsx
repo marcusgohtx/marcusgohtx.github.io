@@ -43,10 +43,10 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   return (
-    <article className="mx-auto max-w-3xl space-y-8">
+    <article className="blog-post">
       <Link
         href="/blog"
-        className="inline-flex text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="blog-back-link"
       >
         Back to blog
       </Link>
