@@ -1,0 +1,9 @@
+[submodule "schedular"]
+	path = schedular
+	url = https://github.com/marcusgohtx/schedular-app.git
+[submodule "ikigai"]
+	path = ikigai
+	url = https://github.com/marcusgohtx/ikigai.git
+[submodule "results-reporter"]
+	path = results-reporter
+	url = https://github.com/marcusgohtx/results-reporter.git

@@ -7,12 +7,14 @@ export type Project = {
   slug: string;
   name: string;
   description: string;
+  url: string;
   fundraisingFeatures: FundraisingFeature[];
 };
 
 export const projects: Project[] = [
   {
     slug: "ikigai",
+    url: "https://marcusgohtx.github.io/ikigai/",
     name: "Ikigai: Make a Life",
     description:
       "A pass-the-device game for friends to draft work ingredients and imagine career possibilities together.",
@@ -25,6 +27,7 @@ export const projects: Project[] = [
   },
   {
     slug: "schedular",
+    url: "https://marcusgohtx.github.io/schedular-app/",
     name: "schedular",
     description: "Conveniently plan a schedule and push changes to your Google Calendar.",
     fundraisingFeatures: [
@@ -37,6 +40,7 @@ export const projects: Project[] = [
   },
   {
     slug: "results-reporter",
+    url: "https://marcusgohtx.github.io/results-reporter/",
     name: "results reporter",
     description:
       "Run browser-based statistical analyses in R and turn them into report-ready writeups.",

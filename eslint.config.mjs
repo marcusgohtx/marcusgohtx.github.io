@@ -1,5 +1,5 @@
-import nextVitals from "eslint-config-next/core-web-vitals";
+import nextVitals from 'eslint-config-next/core-web-vitals';
 
-const config = [...nextVitals];
+const config = [...nextVitals, { ignores: ['schedular/**', 'ikigai/**', 'results-reporter/**', '.migration/**', 'out/**', '.next/**', 'next-env.d.ts'] }];
 
 export default config;

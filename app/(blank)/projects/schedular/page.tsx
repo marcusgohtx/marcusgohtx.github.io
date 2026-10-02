@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
+import { ProjectRedirect } from '@/components/site/project-redirect';
 
-import { SchedularProjectPage } from "./_components/schedular-project-page";
+const url = 'https://marcusgohtx.github.io/schedular-app/';
 
 export const metadata: Metadata = {
-  title: "schedular",
-  description: "Plan event schedules locally in your browser and export them as calendar files.",
+  title: 'Schedular',
+  alternates: { canonical: url },
 };
 
-export default function SchedularPage() {
-  return <SchedularProjectPage />;
+export default function Page() {
+  return <ProjectRedirect name="Schedular" url={url} />;
 }

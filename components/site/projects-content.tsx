@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { projects } from "@/content/projects";
 
 export function ProjectsContent() {
@@ -40,12 +38,12 @@ export function ProjectsContent() {
           {fundraisingProjects.map((project) => (
             <article key={project.slug} className="fundraising-project">
               <div className="project-summary">
-                <Link
-                  href={`/projects/${project.slug}`}
+                <a
+                  href={project.url}
                   className="project-title-link"
                 >
                   {project.name}
-                </Link>
+                </a>
                 <p className="project-description">{project.description}</p>
               </div>
 
@@ -69,10 +67,10 @@ export function ProjectsContent() {
 
         <div className="finished-list">
           {projects.map((project) => (
-            <Link key={project.slug} href={`/projects/${project.slug}`} className="finished-row">
+            <a key={project.slug} href={project.url} className="finished-row">
               <h3>{project.name}</h3>
               <p>{project.description}</p>
-            </Link>
+            </a>
           ))}
         </div>
       </section>

@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
+import { ProjectRedirect } from '@/components/site/project-redirect';
 
-import { ResultsReporterProjectPage } from "./_components/results-reporter-project-page";
+const url = 'https://marcusgohtx.github.io/results-reporter/';
 
 export const metadata: Metadata = {
-  title: "results reporter",
-  description: "Run independent-samples t-tests in webR and export a report-ready summary.",
+  title: 'Results Reporter',
+  alternates: { canonical: url },
 };
 
-export default function ResultsReporterPage() {
-  return <ResultsReporterProjectPage />;
+export default function Page() {
+  return <ProjectRedirect name="Results Reporter" url={url} />;
 }

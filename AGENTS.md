@@ -2,7 +2,9 @@
 
 - This repo is a Next.js personal site deployed to GitHub Pages via `.github/workflows/deploy.yml`.
 - The site is statically exported with `output: "export"` and `trailingSlash: true`.
-- Keep interactive projects such as `schedular` inside the Next.js app.
+- Interactive apps are independent Git repositories linked as submodules: `schedular/`, `ikigai/`, and `results-reporter/`.
+- Work inside the relevant submodule to change an app. Commit and push its changes there, then update the submodule pointer in this repository.
+- The main site lists their public URLs in `content/projects.ts`. Legacy `/projects/<slug>/` routes redirect visitors to the apps.
 
 ## Blog
 
