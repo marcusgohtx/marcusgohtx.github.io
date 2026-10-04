@@ -13,17 +13,12 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "ikigai",
-    url: "https://marcusgohtx.github.io/ikigai/",
-    name: "Ikigai: Make a Life",
+    slug: "ikigai-for-humanity",
+    url: "https://ikigai-for-humanity.marcusgohtx.chatgpt.site/",
+    name: "Ikigai for Humanity",
     description:
-      "A pass-the-device game for friends to draft work ingredients and imagine career possibilities together.",
-    fundraisingFeatures: [
-      {
-        description: "Add live multi-device rooms so friends can play together remotely.",
-        raised: 0,
-      },
-    ],
+      "A multiplayer card game for imagining work that fits your life.",
+    fundraisingFeatures: [],
   },
   {
     slug: "schedular",

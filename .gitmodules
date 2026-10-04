@@ -2,8 +2,8 @@
 	path = schedular
 	url = https://github.com/marcusgohtx/schedular-app.git
 [submodule "ikigai"]
-	path = ikigai
-	url = https://github.com/marcusgohtx/ikigai.git
+	path = ikigai-for-humanity
+	url = https://github.com/marcusgohtx/ikigai-for-humanity.git
 [submodule "results-reporter"]
 	path = results-reporter
 	url = https://github.com/marcusgohtx/results-reporter.git

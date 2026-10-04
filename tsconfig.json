@@ -38,7 +38,7 @@
   "exclude": [
     "node_modules",
     "schedular",
-    "ikigai",
+    "ikigai-for-humanity",
     "results-reporter"
   ]
 }

@@ -53,7 +53,7 @@ The personal website remains in this repository's root. The application folders 
 | Local folder | Repository | Public app |
 | --- | --- | --- |
 | `schedular/` | [schedular-app](https://github.com/marcusgohtx/schedular-app) | [Open Schedular](https://marcusgohtx.github.io/schedular-app/) |
-| `ikigai/` | [ikigai](https://github.com/marcusgohtx/ikigai) | [Open Ikigai](https://marcusgohtx.github.io/ikigai/) |
+| `ikigai-for-humanity/` | [ikigai-for-humanity](https://github.com/marcusgohtx/ikigai-for-humanity) | [Open Ikigai for Humanity](https://ikigai-for-humanity.marcusgohtx.chatgpt.site/) |
 | `results-reporter/` | [results-reporter](https://github.com/marcusgohtx/results-reporter) | [Open Results Reporter](https://marcusgohtx.github.io/results-reporter/) |
 
 The older private `marcusgohtx/schedular` repository is separate and has not been changed.
@@ -74,6 +74,6 @@ Run an app's commands from its own folder. Each app's README explains its develo
 
 Commit and push application changes inside the application's repository first. Then commit the updated submodule pointer in this repository if you want this checkout to record that version. This keeps each app's code and history independent while showing clickable repository entries on GitHub.
 
-Website project links are defined in `content/projects.ts`. Old `/projects/schedular/`, `/projects/ikigai/`, `/projects/results-reporter/`, and `/ikigai-game/index.html` addresses remain as client-side redirects, preserving query strings and fragments. GitHub Pages cannot issue custom server-side 301 redirects.
+Website project links are defined in `content/projects.ts`. Old `/projects/schedular/`, `/projects/ikigai/`, `/projects/results-reporter/`, `/ikigai/`, and `/ikigai-game/index.html` addresses remain as client-side redirects, preserving query strings and fragments. GitHub Pages cannot issue custom server-side 301 redirects.
 
-The apps remain on the `marcusgohtx.github.io` origin and preserve their browser storage keys. Ikigai continues to use the same Supabase multiplayer backend.
+Schedular and Results Reporter remain on the `marcusgohtx.github.io` origin. Ikigai for Humanity runs on ChatGPT Sites with multiplayer rooms stored in its managed database.
